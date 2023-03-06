@@ -116,7 +116,7 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
 
     let new_base_nums = decimal_to_base_n(to_base, decimal, &mut remainders, &mut work, explain);
 
-    if explain {println!("\nNext, we take each of the remainders from the equation above: {:?}\n",{&new_base_nums})}
+    if explain {println!("\nNext, we take each of the remainders from the equations above: {:?}\n",{&new_base_nums})}
 
     let mut new_base_str: Vec<char> = vec![];
 
@@ -134,7 +134,7 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
         for idx in 0..new_base_nums.iter().len() {
             println!("{} -> {}", new_base_nums[idx], new_base_str[idx]);
         }
-        println!("\nThis is our final result => {}", {new_base_str.iter().collect::<String>()});
+        println!("\nThis is our final result (reading top to bottom from the rows above, taking only the right-most number) => {}", {new_base_str.iter().collect::<String>()});
         println!("\nWe converted {} (base {}) => {} (base {})", {input}, {from_base}, {new_base_str.iter().collect::<String>()}, {to_base});
     }
 
