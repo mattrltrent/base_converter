@@ -1,7 +1,7 @@
 
 # Base converter CLI in rust
 
-<img src="https://github.com/mattrltrent/base_converter/blob/main/assets/ex_1.PNG?raw=true" width="" height="" style="display: inline"/>
+<img src="https://github.com/mattrltrent/base_converter/blob/main/assets/ex_1.JPG?raw=true" width="" height="" style="display: inline"/>
 
 ## Notes
 
