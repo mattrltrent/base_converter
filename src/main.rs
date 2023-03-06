@@ -66,13 +66,13 @@ fn print_table(converter: &ValueConverter) {
 
 fn print_help_menu() {
     println!("COMMANDS");
-    println!("'converter help' -> Opens this help menu");
-    println!("'converter A B C' -> Converts string A from base B to base C");
-    println!("'converter table' -> Prints out the table of values it uses to convert");
+    println!("'convert help' -> Opens this help menu");
+    println!("'convert A B C' -> Converts string A from base B to base C");
+    println!("'convert table' -> Prints out the table of values it uses to convert");
     println!("EXAMPLES");
-    println!("'converter 1A23 16 2' -> Converts 1A23 from base 16 to base 2");
-    println!("'converter 1231121 10 32 --explain' -> Converts 1231121 from base 10 to base 32 and explains the steps");
-    println!("'converter 1B6Z 2 12' -> Error: Character 'Z' invalid given your original base '22'");
+    println!("'convert 1A23 16 2' -> Converts 1A23 from base 16 to base 2");
+    println!("'convert 1231121 10 32 --explain' -> Converts 1231121 from base 10 to base 32 and explains the steps");
+    println!("'convert 1B6Z 2 12' -> Error: Character 'Z' invalid given your original base '22'");
 }
 
 fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &ValueConverter) -> Result<String, ErrVariants>{
