@@ -67,8 +67,9 @@ fn print_table(converter: &ValueConverter) {
 fn print_help_menu() {
     println!("COMMANDS");
     println!("'convert help' -> Opens this help menu");
-    println!("'convert A B C' -> Converts string A from base B to base C");
     println!("'convert table' -> Prints out the table of values it uses to convert");
+    println!("'convert A B C' -> Converts string A from base B to base C");
+    println!("'convert A B C --explain' -> Does the same as above, with the addition of an in-depth explanation");
     println!("EXAMPLES");
     println!("'convert 1A23 16 2' -> Converts 1A23 from base 16 to base 2");
     println!("'convert 1231121 10 32 --explain' -> Converts 1231121 from base 10 to base 32 and explains the steps");
