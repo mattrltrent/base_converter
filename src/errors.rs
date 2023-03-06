@@ -2,7 +2,8 @@
 #[derive(Debug)]
 pub enum ErrVariants {
     InvalidCharacter(String),
-    CharacterNotAbidingByBase(String)
+    CharacterNotAbidingByBase(String),
+    EmptyInput(String),
 }
 
 impl ErrVariants {
@@ -10,6 +11,7 @@ impl ErrVariants {
         match &self {
             ErrVariants::InvalidCharacter(message) => message.to_owned(),
             ErrVariants::CharacterNotAbidingByBase(message) => message.to_owned(),
+            ErrVariants::EmptyInput(message) => message.to_owned(),
         }
     }
 }
