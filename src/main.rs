@@ -1,8 +1,6 @@
 // Converts from base 2 - 36
 
-// todo: flag for explaining to base 10 and to other bases
 // todo: protect against variable overflow
-// todo: add help menu
 // todo: add conversion to ensure all uppercase
 // todo: if converting to base 10, ignore second clause? Or from same base I should say as well?
 // todo: make negatives handle properly
@@ -41,7 +39,7 @@ fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
             match &args[2].parse::<u32>() {
                 Ok(from_base) => match &args[3].parse::<u32>() {
                     Ok(to_base) => if (2..=36).contains(from_base) && (2..=36).contains(to_base) {
-                        match calc(*from_base, *to_base, explain, args[1].to_string(), converter) {
+                        match calc(*from_base, *to_base, explain, args[1].to_string().to_uppercase(), converter) {
                             Ok(answer) => {
                                 if !explain {
                                     println!("{answer}")
