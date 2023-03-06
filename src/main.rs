@@ -30,7 +30,14 @@ fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
         },
         4..=5 => if args[1].chars().all(char::is_alphanumeric) && args[2].chars().all(char::is_numeric) && args[3].chars().all(char::is_numeric) {
             let mut explain = false;
-            if args.len() == 5 && args[4].as_str() == "--explain" {explain = true};
+            if args.len() == 5 {
+                if args[4].as_str() == "--explain" {
+                    explain = true;
+                } else {
+                    println!("Invalid input, run 'convert help' for help.");
+                    return
+                }
+            }
             match &args[2].parse::<u32>() {
                 Ok(from_base) => match &args[3].parse::<u32>() {
                     Ok(to_base) => if (2..=36).contains(from_base) && (2..=36).contains(to_base) {
