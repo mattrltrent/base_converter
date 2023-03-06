@@ -4,36 +4,81 @@
 // todo: protect against variable overflow
 // todo: add help menu
 // todo: add conversion to ensure all uppercase
+// todo: if converting to base 10, ignore second clause? Or from same base I should say as well?
+// todo: make negatives handle properly
 
 pub mod errors;
 pub mod conversions;
 use errors::ErrVariants;
+use std::env;
 
 use crate::conversions::ValueConverter;
 
 fn main() {
-    let from_base = 22;
-    let to_base = 16;
-    let explain: bool = true;
-    match calc(from_base, to_base, explain) {
-        Ok(answer) => {
-            if !explain {
-                println!("{answer}")
-            }
+    let args: Vec<String> = env::args().collect();
+    let converter = ValueConverter::new();
+    decide_what_to_execute(&args, &converter);
+}
+
+fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
+    match args.len() {
+        0..=1 => println!("Run 'convert help' to get started."),
+        2 => match args[1].as_str() {
+            "table" => print_table(converter),
+            "help" => print_help_menu(),
+            _ => println!("Invalid input, run 'convert help' for help.")
         },
-        Err(err) => println!("Error: {}\nRun 'convert help' for help!", err.message())
+        4..=5 => if args[1].chars().all(char::is_alphanumeric) && args[2].chars().all(char::is_numeric) && args[3].chars().all(char::is_numeric) {
+            let mut explain = false;
+            if args.len() == 5 && args[4].as_str() == "--explain" {explain = true};
+            match &args[2].parse::<u32>() {
+                Ok(from_base) => match &args[3].parse::<u32>() {
+                    Ok(to_base) => if (2..=36).contains(from_base) && (2..=36).contains(to_base) {
+                        match calc(*from_base, *to_base, explain, args[1].to_string(), converter) {
+                            Ok(answer) => {
+                                if !explain {
+                                    println!("{answer}")
+                                }
+                            },
+                            Err(err) => println!("Error: {}. Run 'convert help' for help.", err.message())
+                        }
+                    } else {
+                        println!("Error, bases must be between 2 and 36 (inclusive).");
+                    }
+                    Err(_) => println!("Invalid 'to base' {}.", {&args[1]}),
+                },
+                Err(_) => println!("Invalid 'from base' {}.", {&args[2]}),
+            }
+            
+        }, 
+        _ => println!("Invalid input, run 'convert help' for help")
+    }
+
+}
+
+
+fn print_table(converter: &ValueConverter) {
+    println!("Conversion table:\n");
+    for entry in converter.get_table() {
+        println!("{} -> {}", entry.0, entry.1);
     }
 }
 
-fn calc(from_base: u32, to_base: u32, explain: bool) -> Result<String, ErrVariants>{
+fn print_help_menu() {
+    println!("COMMANDS");
+    println!("'converter help' -> Opens this help menu");
+    println!("'converter A B C' -> Converts string A from base B to base C");
+    println!("'converter table' -> Prints out the table of values it uses to convert");
+    println!("EXAMPLES");
+    println!("'converter 1A23 16 2' -> Converts 1A23 from base 16 to base 2");
+    println!("'converter 1231121 10 32 --explain' -> Converts 1231121 from base 10 to base 32 and explains the steps");
+    println!("'converter 1B6Z 2 12' -> Error: Character 'Z' invalid given your original base '22'");
+}
 
-    let converter = ValueConverter::new();
-    
-    let input = String::from("1B6");
+fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &ValueConverter) -> Result<String, ErrVariants>{
+
 
     if input.is_empty() {return Err(ErrVariants::EmptyInput("No input provided".to_string()))}
-
-
 
     let mut nums: Vec<u32> = vec![];
 
@@ -46,7 +91,7 @@ fn calc(from_base: u32, to_base: u32, explain: bool) -> Result<String, ErrVarian
 
     // todo: command to show conversion table
     if explain {
-        println!("CONVERTING {} (BASE {}) TO BASE {}\n", {&input}, {&from_base}, {to_base});
+        println!("Converting {} (base {}) to base {}\n", {&input}, {&from_base}, {to_base});
         println!("First, map all characters in your base {} string {} to their corresponding numeric value. Run 'convert table' to view the table.\n", {from_base}, {&input});
         for idx in 0..nums.iter().len() {
             println!("{} -> {}", input.chars().nth(idx).unwrap(), nums[idx]);

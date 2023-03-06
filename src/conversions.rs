@@ -89,6 +89,10 @@ impl ValueConverter {
         }
     }
 
+    pub fn get_table(&self) -> HashMap<char, u32>{
+        return self.forward_map.clone();
+    }
+
     pub fn from_char(&self, c: &char) -> Result<u32, ErrVariants> {
         if let Some(num) = self.forward_map.get(&c) {
             return Ok(*num) 
