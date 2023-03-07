@@ -7,7 +7,7 @@
 pub mod errors;
 pub mod conversions;
 use errors::ErrVariants;
-use std::env;
+use std::{env, num::ParseIntError};
 
 use crate::conversions::ValueConverter;
 
@@ -96,6 +96,11 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
         }
     };
 
+    match concat_vec(&nums) {
+        Ok(number) => if number > u32::MAX {return Err(ErrVariants::Overflow("This number would overflow. Try a smaller number".to_string()))},
+        Err(_) => return Err(ErrVariants::Overflow("This number would overflow. Try a smaller number".to_string())),
+    }
+
     if explain {
         println!("Converting {} (base {}) to base {}\n", {&input}, {&from_base}, {to_base});
         println!("First, map all characters in your base {} string {} to their corresponding numeric value. Run 'convert table' to view the table.\n", {from_base}, {&input});
@@ -104,6 +109,7 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
         }
         println!("")
     }
+    
 
     let mut remainders: Vec<u32> = vec![];
     let mut work: Vec<String> = vec![];
@@ -139,6 +145,11 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
     }
 
     Ok(new_base_str.iter().collect::<String>())
+}
+
+fn concat_vec(vec: &Vec<u32>) -> Result<u32, ParseIntError> {
+    let t = vec.iter().fold("".to_string(), |acc, x| acc + &x.to_string());
+    t.parse::<u32>()
 }
 
 // todo: fix possible panic on usize -> u32 conversion
