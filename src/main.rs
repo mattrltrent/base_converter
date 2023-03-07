@@ -1,8 +1,7 @@
 // Converts from base 2 - 36
 
 // todo: protect against variable overflow
-// todo: add conversion to ensure all uppercase
-// todo: if converting to base 10, ignore second clause? Or from same base I should say as well?
+// todo: if converting to base 10, ignore second clause?
 // todo: make negatives handle properly
 
 pub mod errors;
@@ -24,6 +23,11 @@ fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
         2 => match args[1].as_str() {
             "table" => print_table(converter),
             "help" => print_help_menu(),
+            "--version" | "version" => if let Some(version) = option_env!("CARGO_PKG_VERSION") {
+                return println!("{version}");
+            } else {
+                return println!("Error reading version.");
+            }
             _ => println!("Invalid input, run 'convert help' for help.")
         },
         4..=5 => if args[1].chars().all(char::is_alphanumeric) && args[2].chars().all(char::is_numeric) && args[3].chars().all(char::is_numeric) {
@@ -55,7 +59,9 @@ fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
                 Err(_) => println!("Invalid 'from base' {}.", {&args[2]}),
             }
             
-        }, 
+        } else {
+            println!("Invalid input, run 'convert help' for help")
+        } 
         _ => println!("Invalid input, run 'convert help' for help")
     }
 
@@ -63,22 +69,17 @@ fn decide_what_to_execute(args: &Vec<String>, converter: &ValueConverter) {
 
 
 fn print_table(converter: &ValueConverter) {
-    println!("Conversion table:\n");
     for entry in converter.get_table() {
         println!("{} -> {}", entry.0, entry.1);
     }
 }
 
 fn print_help_menu() {
-    println!("COMMANDS");
-    println!("'convert help' -> Opens this help menu");
-    println!("'convert table' -> Prints out the table of values it uses to convert");
-    println!("'convert A B C' -> Converts string A from base B to base C");
-    println!("'convert A B C --explain' -> Does the same as above, with the addition of an in-depth explanation");
-    println!("EXAMPLES");
-    println!("'convert 1A23 16 2' -> Converts 1A23 from base 16 to base 2");
-    println!("'convert 1231121 10 32 --explain' -> Converts 1231121 from base 10 to base 32 and explains the steps");
-    println!("'convert 1B6Z 2 12' -> Error: Character 'Z' invalid given your original base '22'");
+    println!("convert help -> Opens this help menu");
+    println!("convert table -> Prints out the table of values used for character mapping");
+    println!("convert A B C -> Converts string A from base B to base C");
+    println!("convert A B C --explain -> Does the same as above, with the addition of an in-depth explanation");
+    println!("convert version -> Lists application version");
 }
 
 fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &ValueConverter) -> Result<String, ErrVariants>{
@@ -95,7 +96,6 @@ fn calc(from_base: u32, to_base: u32, explain: bool, input: String, converter: &
         }
     };
 
-    // todo: command to show conversion table
     if explain {
         println!("Converting {} (base {}) to base {}\n", {&input}, {&from_base}, {to_base});
         println!("First, map all characters in your base {} string {} to their corresponding numeric value. Run 'convert table' to view the table.\n", {from_base}, {&input});
@@ -175,7 +175,3 @@ fn decimal_to_base_n<'a>(base: u32, num: u32, remainders: &'a mut Vec<u32>, work
 fn divide(dividend: u32, divisor: u32) -> (u32, u32) {
     (dividend / divisor, dividend % divisor)
 }
-
-
-
-
